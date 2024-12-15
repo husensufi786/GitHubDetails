@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="logo" href="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_640.png">
+  <title>Document</title>
+  <style>
+    body {
+      
+      text-align: center;
+      margin-top: 50px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+    .user-details {
+      margin-top: 20px;
+      text-align: left;
+      display: inline-block;
+    }
+    img {
+      width: 100px;
+      border-radius: 50%;
+    }
+    .error {
+      color: red;
+    }
+    #ids{
+        
+    }
+    
+    .textBox{
+        
+        display: inline-block;
+        padding-bottom: 60px; 
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <div class="textBox">
+      <h1 id="ids">Enter User Details </h1>
+    <input type="text" id="userName" placeholder="Enter a Valid User Name">
+    <button onclick="detailsGitHub()">Fetch</button>
+  </div>
+
+
+  <div id="invalid" class="error"></div>
+
+  
+  <div id="details" class="user-details"></div>
+
+  <script>
+    async function detailsGitHub() {
+    
+      const username = document.getElementById("userName").value.trim();
+      const invalid = document.getElementById("invalid");
+      const details = document.getElementById("details");
+
+      
+      invalid.textContent = "";
+      details.innerHTML = "";
+
+      if (!username) {
+        invalid.textContent = "User Name Cannot be Empty.";
+        return;
+      }
+
+      try {
+        
+        const response = await fetch(`https://api.github.com/users/${username}`);
+        if (!response.ok) {
+          throw new Error("You Have Entered Invalid GitHub Details");
+        }
+        const detail = await response.json();
+
+        
+        details.innerHTML = `
+          <img src="${detail.avatar_url}" alt="Avatar">
+          <p>Name: ${detail.name || "N/A"}</p>
+          <p>Username: ${detail.login}</p>
+          <p>Followers:${detail.followers}</p>
+          <p>Following:${detail.following}</p>
+          <p>Repositories:${detail.public_repos}</p>
+          <a href="${detail.html_url}" target="_blank">View Details</a>
+        `;
+      } catch (error) {
+        invalid.textContent = error.message;
+      }
+    }
+  </script>
+</body>
+</html>
